@@ -1,0 +1,11 @@
+{
+  "name": "next-session-provider",
+  "devDependencies": {
+    "@types/react": "^18.2.6",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
