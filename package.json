@@ -1,11 +1,41 @@
 {
   "name": "next-session-provider",
-  "devDependencies": {
-    "@types/react": "^18.2.6",
-    "typescript": "^5.0.4"
+  "version": "1.0.0",
+  "description": "Session Provider for Next.js",
+  "author": "Michał Furmańczak <michalfurmanczak@gmail.com>",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": "./index.js",
+    "./react": "./react/index.js"
   },
+  "scripts": {
+    "build": "tsc --project tsconfig.json && babel --config-file ./config/babel.config.js src --out-dir . --extensions \".tsx,.ts,.js,.jsx\""
+  },
+  "files": [
+    "core",
+    "react",
+    "utils",
+    "*.d.ts*",
+    "*.js"
+  ],
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@babel/runtime": "^7.20.13"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.18.2",
+    "@babel/plugin-proposal-optional-catch-binding": "^7.16.7",
+    "@babel/plugin-transform-runtime": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
+    "@babel/preset-typescript": "^7.17.12",
+    "@types/node": "^20.2.5",
+    "@types/react": "^18.2.6",
+    "@types/react-dom": "^18.0.6",
+    "babel-plugin-jsx-pragmatic": "^1.0.2",
+    "babel-preset-preact": "^2.0.0",
+    "typescript": "^5.0.4"
   }
 }

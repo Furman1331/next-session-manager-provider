@@ -2,15 +2,52 @@ import * as React from "react";
 
 import { now } from "../utils/utils";
 import Logger from "../utils/logger";
-import { AuthClientConfig, Session, SessionContextValue, SessionProviderProps } from "./types";
+import { AuthClientConfig, Session, SessionContextValue, SessionProviderProps, UseSessionOptions } from "./types";
 
 const __AUTH: AuthClientConfig = {
+    signInUrl: process.env.SESSION_PROVIDER_SIGN_IN_URL ?? "/auth/login",
     _lastSync: 0,
     _session: undefined,
     _getSession: () => { },
 }
 
-const SessionContext = React.createContext?.<SessionContextValue | undefined>(undefined);
+export * from "./types";
+
+export const SessionContext = React.createContext?.<SessionContextValue | undefined>(undefined);
+
+export function useSession<R extends boolean>(
+    options?: UseSessionOptions<R>
+): SessionContextValue<R> {
+    if (!SessionContext) throw new Error("React Context is unavailable in Server Components");
+
+    // @ts-expect-error
+    const value: SessionContextValue<R> = React.useContext(SessionContext);
+    if (!value && process.env.NODE_ENV !== "production") {
+        throw new Error("[next-session-provider] `useSession must be wrapped in a <SessionProvider>`")
+    }
+
+    const { required, onUnauthenticated } = options ?? {};
+
+    const requiredAndNotLoading = required && value.status === "unauthenticated";
+
+    React.useEffect(() => {
+        if (requiredAndNotLoading) {
+            if (onUnauthenticated) onUnauthenticated();
+
+            window.location.href = __AUTH.signInUrl;
+        }
+    }, [requiredAndNotLoading, onUnauthenticated])
+
+    if (requiredAndNotLoading) {
+        return {
+            data: value.data,
+            update: value.update,
+            status: "loading",
+        }
+    }
+
+    return value;
+}
 
 export function SessionProvider(props: SessionProviderProps) {
     if (!SessionContext) throw new Error("React Context is unavailable in Server Components");
@@ -77,7 +114,7 @@ export function SessionProvider(props: SessionProviderProps) {
         data: session,
         status: loading ? "loading" : session ? "authenticated" : "unauthenticated",
         async update(data: Session) {
-            if (loading || !session) return;
+            if (loading) return;
 
             setLoading(true);
 

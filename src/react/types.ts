@@ -1,3 +1,8 @@
+export interface UseSessionOptions<R extends boolean> {
+    required: R;
+    onUnauthenticated?: () => void;
+}
+
 type ISODateString = string;
 
 interface DefaultSession {
@@ -20,7 +25,7 @@ export type SessionContextValue<R extends boolean = false> = R extends true
           | {
                 update: UpdateSession;
                 data: null;
-                status: "loading" | "unauthenticated";
+                status: "unauthenticated" | "loading";
             };
 
 export interface SessionProviderProps {
@@ -32,6 +37,8 @@ export interface SessionProviderProps {
 }
 
 export interface AuthClientConfig {
+    signInUrl: string;
+
     _session?: Session | null | undefined;
     _lastSync: number;
     _getSession: (...args: any[]) => any;
