@@ -1,18 +1,9 @@
+import { Session } from "..";
+
 export interface UseSessionOptions<R extends boolean> {
     required: R;
     onUnauthenticated?: () => void;
 }
-
-type ISODateString = string;
-
-interface DefaultSession {
-    user?: {
-        email?: string | null;
-    };
-    expires: ISODateString;
-}
-
-export interface Session extends DefaultSession {}
 
 type UpdateSession = (data?: any) => Promise<Session | null>;
 
@@ -31,7 +22,7 @@ export type SessionContextValue<R extends boolean = false> = R extends true
 export interface SessionProviderProps {
     children: React.ReactNode;
     session?: Session | null;
-    sessionGetter: (...args: any[]) => any;
+    sessionGetter: (...args: any[]) => Session["user"];
 
     refetchOnWindowFocus?: boolean;
 }

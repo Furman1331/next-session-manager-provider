@@ -16,12 +16,22 @@
   "files": [
     "core",
     "react",
+    "next",
     "utils",
     "*.d.ts*",
     "*.js"
   ],
   "dependencies": {
     "@babel/runtime": "^7.20.13"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2 || ^18",
+    "react-dom": "^17.0.2 || ^18"
+  },
+  "peerDependenciesMeta": {
+    "nodemailer": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",

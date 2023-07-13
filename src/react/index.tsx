@@ -1,8 +1,11 @@
 import * as React from "react";
 
-import { now } from "../utils/utils";
+import { createSession, generateSessionOptions, now } from "../utils/utils";
+import { Session, SessionOptions } from "..";
+
 import Logger from "../utils/logger";
-import { AuthClientConfig, Session, SessionContextValue, SessionProviderProps, UseSessionOptions } from "./types";
+
+import { AuthClientConfig, SessionContextValue, SessionProviderProps, UseSessionOptions } from "./types";
 
 const __AUTH: AuthClientConfig = {
     signInUrl: process.env.SESSION_PROVIDER_SIGN_IN_URL ?? "/auth/login",
@@ -54,6 +57,8 @@ export function SessionProvider(props: SessionProviderProps) {
 
     const { children } = props;
 
+    const sessionOptions: SessionOptions = generateSessionOptions();
+
     const isSessionInitialized = props.session !== undefined;
 
     __AUTH._lastSync = isSessionInitialized ? now() : 0;
@@ -62,7 +67,14 @@ export function SessionProvider(props: SessionProviderProps) {
         if (isSessionInitialized) __AUTH._session = props.session;
         return props.session;
     });
+
     const [loading, setLoading] = React.useState(!isSessionInitialized);
+
+    async function getSession(): Promise<Session> {
+        const user = await props.sessionGetter();
+
+        return await createSession(user, sessionOptions);
+    }
 
     React.useEffect(() => {
         __AUTH._getSession = async ({ event } = {}) => {
@@ -72,7 +84,7 @@ export function SessionProvider(props: SessionProviderProps) {
                 if (isStorageEvent || __AUTH._session === undefined) {
                     __AUTH._lastSync = now();
                     // Run your function that gets current session from your API.
-                    __AUTH._session = await props.sessionGetter();
+                    __AUTH._session = await getSession();
 
                     setSession(__AUTH._session);
                     return
@@ -81,7 +93,7 @@ export function SessionProvider(props: SessionProviderProps) {
                 if (!event || __AUTH._session === null || now() < __AUTH._lastSync) return;
 
                 __AUTH._lastSync = now();
-                __AUTH._session = await props.sessionGetter();
+                __AUTH._session = await getSession();
                 setSession(__AUTH._session);
             } catch (error) {
                 Logger.error("CLIENT_SESSION_ERROR", error as Error);
@@ -118,7 +130,7 @@ export function SessionProvider(props: SessionProviderProps) {
 
             setLoading(true);
 
-            __AUTH._session = await props.sessionGetter();
+            __AUTH._session = await getSession();
             setSession(__AUTH._session);
 
             setLoading(false);
