@@ -9,7 +9,7 @@ For now there is a Client Side session provider that store and manage session.
 ## Getting Started
 
 ```
-npm install next-session-provider
+npm install next-session-manager-provider
 ```
 
 ### How to use
@@ -82,3 +82,7 @@ export const getServerSideProps = async ({ req }: any) => {
     }
 }
 ```
+
+## License
+
+ISC
