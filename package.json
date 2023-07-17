@@ -1,6 +1,6 @@
 {
   "name": "next-session-manager-provider",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Session Provider for Next.js",
   "repository": "https://github.com/Furman1331/next-session-manager-provider",
   "author": "Michał Furmańczak <michalfurmanczak@gmail.com>",
