@@ -5,7 +5,7 @@ import { Session, SessionOptions } from "..";
 
 import Logger from "../utils/logger";
 
-import { AuthClientConfig, SessionContextValue, SessionProviderProps, UseSessionOptions } from "./types";
+import { AuthClientConfig, SessionContextValue, SessionProviderProps, SignInParams, SignOutParams, UseSessionOptions } from "./types";
 
 const __AUTH: AuthClientConfig = {
     signInUrl: process.env.SESSION_PROVIDER_SIGN_IN_URL ?? "/auth/login",
@@ -50,6 +50,34 @@ export function useSession<R extends boolean>(
     }
 
     return value;
+}
+
+export async function onSignIn<R extends boolean = false>(
+    options?: SignInParams<R>
+): Promise<void> {
+    const { callbackUrl = window.location.href } = options ?? {};
+
+    if (options?.redirect ?? true) {
+        window.location.href = callbackUrl;
+
+        return;
+    }
+
+    await __AUTH._getSession();
+}
+
+export async function onSingOut<R extends boolean = true>(
+    options?: SignOutParams<R>
+): Promise<void> {
+    const { callbackUrl = window.location.href } = options ?? {};
+
+    if (options?.redirect ?? true) {
+        window.location.href = callbackUrl;
+
+        return;
+    }
+
+    await __AUTH._getSession();
 }
 
 export function SessionProvider(props: SessionProviderProps) {

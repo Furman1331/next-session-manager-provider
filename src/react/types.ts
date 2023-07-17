@@ -34,3 +34,13 @@ export interface AuthClientConfig {
     _lastSync: number;
     _getSession: (...args: any[]) => any;
 }
+
+export interface SignInParams<R extends boolean = true> {
+    callbackUrl?: string;
+    redirect?: R;
+}
+
+export interface SignOutParams<R extends boolean = true> {
+    callbackUrl?: string;
+    redirect?: R;
+}

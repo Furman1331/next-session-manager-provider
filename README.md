@@ -1,8 +1,8 @@
 ## Overview
 
-Next Session Provider is a complete open source session provider solution for [Next.js](http://nextjs.org/) applications
+Next Session Provider is a open source session provider solution for [Next.js](http://nextjs.org/) applications.
 
-It is designed based on NextAuth package that provides authentication solution. This package is targeted to project that want to have their own authentication or they accually have one.
+It is designed based on [NextAuth](https://next-auth.js.org/) package that provides authentication solution. This package is targeted to project that want to have their own authentication or they accually have one.
 
 For now there is a Client Side session provider that store and manage session.
 
@@ -33,10 +33,10 @@ const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
 }
 ```
 
-2. Frotend - React Hooks - The useSession React Hook in the next-session-provider client is the way to get session and status of session
+2. Frotend - React Hooks - The useSession React Hook in the next-session-manager-provider client is the way to get session and status of session
 
 ```javascript
-import { useSession } from "next-session-provider/react";
+import { useSession } from "next-session-manager-provider/react";
 
 const Menu = () => {
     const { data: session, update, status } = useSession();
@@ -51,6 +51,53 @@ const Menu = () => {
     console.log(status); // Its conna output current session status.
 }
 ```
+
+3. Authorization - After authenticate you can trigger function that make session refresh. Example:
+
+```javascript
+import { onSignIn, onSingOut } from "next-session-manager-provider/react";
+
+const LoginView = () => {
+    const authenticationHandler = () => {
+        // Your Authenticate Logic
+
+        // It should refresh your session to the newest using your function that you pass in provider.
+        onSignIn();
+    }
+}
+
+const LogoutView = () => {
+    const logoutHandler = () => {
+        // Your Logout Logic
+
+        // It should refresh session as function above.
+        onSingOut();
+    }
+}
+```
+
+### Typescript support
+
+By default, Typescript will merge new interface properties and overwrite exisiting one. In this case, the default session user properties will be overwitten, with the one one define above.
+
+Example that overwrite whole interface.
+
+```javascript
+import NextSessionManagerProvider from "next-session-manager-provider";
+
+export interface UserSession {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+}
+
+declare module "next-session-manager-provider" {
+    interface Session {
+        user: UserSession;
+    }
+}
+```
+
 
 ### Feature plans
 
