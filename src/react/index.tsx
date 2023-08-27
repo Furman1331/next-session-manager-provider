@@ -69,9 +69,9 @@ export async function onSignIn<R extends boolean = false>(
 export async function onSignOut<R extends boolean = true>(
     options?: SignOutParams<R>
 ): Promise<void> {
-    if (!window) return await __AUTH._getSession();
+    if (typeof window === "undefined") return await __AUTH._getSession();
 
-    const { callbackUrl = window.location.href } = options ?? {};
+    const { callbackUrl = window?.location?.href } = options ?? {};
 
     if (options?.redirect ?? true) {
         window.location.href = callbackUrl;
